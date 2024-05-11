@@ -494,10 +494,10 @@ const utils = {
 	 * @returns {Boolean}
 	 */
 	isInheritedClass(instance, baseClass) {
-		const baseClassName = module.exports.getConstructorName(baseClass);
+		const baseClassName = utils.getConstructorName(baseClass);
 		let proto = instance;
 		while ((proto = Object.getPrototypeOf(proto))) {
-			const protoName = module.exports.getConstructorName(proto);
+			const protoName = utils.getConstructorName(proto);
 			if (baseClassName == protoName) return true;
 		}
 
