@@ -10,14 +10,7 @@ const os = require("os");
 const METRIC = require("./constants");
 const cpuUsage = require("../cpu-usage");
 
-let v8, eventLoop;
-
-// Load `v8` module for heap metrics.
-try {
-	v8 = require("v8");
-} catch (e) {
-	// silent
-}
+let eventLoop;
 
 /**
  * Register common OS, process & Moleculer metrics.
@@ -463,37 +456,6 @@ function updateCommonMetrics() {
 	this.set(METRIC.PROCESS_MEMORY_HEAP_SIZE_USED, procMem.heapUsed);
 	this.set(METRIC.PROCESS_MEMORY_RSS, procMem.rss);
 	this.set(METRIC.PROCESS_MEMORY_EXTERNAL, procMem.external);
-
-	if (v8 && v8.getHeapSpaceStatistics) {
-		const stat = v8.getHeapSpaceStatistics();
-		stat.forEach(item => {
-			const space = item.space_name;
-			this.set(METRIC.PROCESS_MEMORY_HEAP_SPACE_SIZE_TOTAL, item.space_size, { space });
-			this.set(METRIC.PROCESS_MEMORY_HEAP_SPACE_SIZE_USED, item.space_used_size, { space });
-			this.set(METRIC.PROCESS_MEMORY_HEAP_SPACE_SIZE_AVAILABLE, item.space_available_size, {
-				space
-			});
-			this.set(METRIC.PROCESS_MEMORY_HEAP_SPACE_SIZE_PHYSICAL, item.physical_space_size, {
-				space
-			});
-		});
-	}
-
-	if (v8 && v8.getHeapStatistics) {
-		const stat = v8.getHeapStatistics();
-		this.set(METRIC.PROCESS_MEMORY_HEAP_STAT_HEAP_SIZE_TOTAL, stat.total_heap_size);
-		this.set(
-			METRIC.PROCESS_MEMORY_HEAP_STAT_EXECUTABLE_SIZE_TOTAL,
-			stat.total_heap_size_executable
-		);
-		this.set(METRIC.PROCESS_MEMORY_HEAP_STAT_PHYSICAL_SIZE_TOTAL, stat.total_physical_size);
-		this.set(METRIC.PROCESS_MEMORY_HEAP_STAT_AVAILABLE_SIZE_TOTAL, stat.total_available_size);
-		this.set(METRIC.PROCESS_MEMORY_HEAP_STAT_USED_HEAP_SIZE, stat.used_heap_size);
-		this.set(METRIC.PROCESS_MEMORY_HEAP_STAT_HEAP_SIZE_LIMIT, stat.heap_size_limit);
-		this.set(METRIC.PROCESS_MEMORY_HEAP_STAT_MALLOCATED_MEMORY, stat.malloced_memory);
-		this.set(METRIC.PROCESS_MEMORY_HEAP_STAT_PEAK_MALLOCATED_MEMORY, stat.peak_malloced_memory);
-		this.set(METRIC.PROCESS_MEMORY_HEAP_STAT_ZAP_GARBAGE, stat.does_zap_garbage);
-	}
 
 	this.set(METRIC.PROCESS_UPTIME, process.uptime());
 	this.set(METRIC.PROCESS_INTERNAL_ACTIVE_HANDLES, process._getActiveHandles().length);
