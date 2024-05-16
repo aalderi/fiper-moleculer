@@ -1,6 +1,6 @@
 {
   "name": "@markaalderink/fiper-moleculer",
-  "version": "0.14.34",
+  "version": "0.14.341",
   "description": "Fast & powerful microservices framework for Node.JS",
   "main": "index.js",
   "exports": {
